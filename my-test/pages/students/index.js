@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import orderBy from 'lodash/orderBy';
 import { TablePagination } from '@mui/material';
+import CircularProgress from '@mui/material/CircularProgress';
 
 import SortedTable from '../../Components/Table';
 import { useApiRequest } from '../../hooks/useApiRequest';
@@ -11,6 +12,7 @@ export const Students = () => {
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState('asc');
   const [orderByColumnName, setOrderByColumnName] = useState('City');
+  const [loading, setLoading] = useState(true);
 
   const { getData } = useApiRequest();
 
@@ -25,8 +27,10 @@ export const Students = () => {
   }, [students]);
 
   const getAllStudents = async () => {
+    setLoading(true)
     const list = await getData(process.env.NEXT_PUBLIC_API_URL);
     setStudents(list);
+    setLoading(false)
   };
 
   const handleChangePage = (event, newPage) => {
@@ -61,11 +65,21 @@ export const Students = () => {
 
   return (
     <div style={tableStyles}>
-      <SortedTable
-        data={orderBy(students, orderByColumnName, order).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)}
-        handleSort={handleSort}
-        labels={fields}
-      />
+      {
+        loading ? (
+          <div style={{ width: '4vw', margin: 'auto' }}>
+            <CircularProgress />
+          </div>
+        ) : (
+          <SortedTable
+            data={orderBy(students, orderByColumnName, order).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)}
+            handleSort={handleSort}
+            labels={fields}
+            order={order}
+            orderByColumnName={orderByColumnName}
+          />
+        )
+      }
       <TablePagination
         rowsPerPageOptions={[5, 10, 25]}
         component="div"
