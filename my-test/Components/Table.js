@@ -4,9 +4,8 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
 import TableBody from '@mui/material/TableBody';
+import TableSortLabel from '@mui/material/TableSortLabel';
 import TableContainer from '@mui/material/TableContainer';
-
-import { ArrowDownward, ArrowUpward } from '@mui/icons-material';
 
 export const SortedTable = (props) => {
   const { data, labels, handleSort, order, orderByColumnName } = props;
@@ -24,19 +23,15 @@ export const SortedTable = (props) => {
               <TableCell
                 key={index}
                 align={index === 0 ? 'left' : 'right'}
-                onClick={() => handleSort(label)}
                 style={{ maxWidth: '100px' }}
               >
-                {orderByColumnName === label ? (
-                  order === 'asc' ? (
-                    <ArrowUpward fontSize="small" style={arrowStyles} />
-                  ) : (
-                    <ArrowDownward fontSize="small" style={arrowStyles} />
-                  )
-                ) : (
-                  <ArrowDownward fontSize="small" style={arrowStyles} />
-                )}
-                <b>{label}</b>
+                <TableSortLabel
+                  active={orderByColumnName === label}
+                  direction={orderByColumnName === label ? order : 'desc'}
+                  onClick={() => handleSort(label)}
+                >
+                  <b>{label}</b>
+                </TableSortLabel>
               </TableCell>
             ))}
           </TableRow>
