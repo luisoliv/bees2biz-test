@@ -17,7 +17,23 @@ export const useApiRequest = () => {
     }
   };
 
+  const deleteData = async (url) => {
+    try {
+      const response = await fetch(url, {
+        method: 'DELETE',
+        mode: 'cors',
+        cache: 'no-cache',
+      });
+      if (response.ok || response.status === 200) {
+        return response;
+      }
+    } catch (e) {
+      console.log('$ ERROR e', e);
+    }
+  };
+
   return {
     getData,
+    deleteData,
   };
 };

@@ -6,13 +6,21 @@ import TableCell from '@mui/material/TableCell';
 import TableBody from '@mui/material/TableBody';
 import TableSortLabel from '@mui/material/TableSortLabel';
 import TableContainer from '@mui/material/TableContainer';
+import { IconButton } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 
 export const SortedTable = (props) => {
-  const { data, labels, handleSort, order, orderByColumnName } = props;
-
-  const arrowStyles = {
-    marginBottom: -4,
-  };
+  const {
+    data,
+    labels,
+    handleSort,
+    order,
+    orderByColumnName,
+    handleCreate,
+    handleEdit,
+    handleDelete,
+  } = props;
 
   return (
     <TableContainer component={Paper}>
@@ -34,6 +42,13 @@ export const SortedTable = (props) => {
                 </TableSortLabel>
               </TableCell>
             ))}
+
+            {(handleEdit || handleDelete) && (
+              <TableCell
+                align="right"
+                style={{ maxWidth: '100px' }}
+              ></TableCell>
+            )}
           </TableRow>
         </TableHead>
         <TableBody>
@@ -51,6 +66,30 @@ export const SortedTable = (props) => {
                   {element[label]}
                 </TableCell>
               ))}
+
+              {(handleEdit || handleDelete) && (
+                <TableCell align="right" style={{ maxWidth: '100px' }}>
+                  {handleEdit && (
+                    <IconButton
+                      aria-label="upload picture"
+                      component="label"
+                      onClick={() => handleEdit(element.id)}
+                    >
+                      <EditIcon fontSize={'small'} />
+                    </IconButton>
+                  )}
+
+                  {handleDelete && (
+                    <IconButton
+                      aria-label="upload picture"
+                      component="label"
+                      onClick={() => handleDelete(element.id)}
+                    >
+                      <DeleteIcon fontSize={'small'} />
+                    </IconButton>
+                  )}
+                </TableCell>
+              )}
             </TableRow>
           ))}
         </TableBody>

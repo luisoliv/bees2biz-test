@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 import orderBy from 'lodash/orderBy';
 import { TablePagination } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
+import Swal from 'sweetalert2';
 
 import SortedTable from '../../Components/Table';
 import { useApiRequest } from '../../hooks/useApiRequest';
@@ -14,10 +16,13 @@ export const Students = () => {
   const [orderByColumnName, setOrderByColumnName] = useState('City');
   const [loading, setLoading] = useState(true);
 
-  const { getData } = useApiRequest();
+  const { getData, deleteData } = useApiRequest();
+  const router = useRouter();
 
   useEffect(() => {
-    getAllStudents();
+    getAllStudents().then(() => {
+      router.prefetch('/students/create');
+    });
   }, []);
 
   useEffect(() => {
@@ -27,10 +32,37 @@ export const Students = () => {
   }, [students]);
 
   const getAllStudents = async () => {
-    setLoading(true)
+    setLoading(true);
     const list = await getData(process.env.NEXT_PUBLIC_API_URL);
     setStudents(list);
-    setLoading(false)
+    setLoading(false);
+  };
+
+  const deleteStudent = async (studentId) => {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "Once deleted, you will not be able to recover this student's data!",
+      icon: 'warning',
+      buttons: true,
+      dangerMode: true,
+    }).then(async (willDelete) => {
+      if (willDelete) {
+        const response = await deleteData(
+          process.env.NEXT_PUBLIC_API_URL + '/' + studentId,
+        );
+
+        if (response.ok || response.status === 200) {
+          getAllStudents();
+          Swal.fire('Poof! Your student has been deleted!', {
+            icon: 'success',
+          });
+        }
+      }
+    });
+  };
+
+  const editStudent = (studentId) => {
+    console.log('$ DEBUG studentId', studentId);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -44,16 +76,11 @@ export const Students = () => {
 
   const handleSort = (columnName) => {
     setOrderByColumnName(columnName);
-    const invertOrder = order === 'asc' ? 'desc' : 'asc'
-    setOrder(orderByColumnName === columnName ? invertOrder : 'asc')
-  }
+    const invertOrder = order === 'asc' ? 'desc' : 'asc';
+    setOrder(orderByColumnName === columnName ? invertOrder : 'asc');
+  };
 
-  const fields = [
-    'City',
-    'Student',
-    'Industry',
-    'Interests',
-  ];
+  const fields = ['City', 'Student', 'Industry', 'Interests'];
 
   //styles
   const tableStyles = {
@@ -65,21 +92,24 @@ export const Students = () => {
 
   return (
     <div style={tableStyles}>
-      {
-        loading ? (
-          <div style={{ width: '4vw', margin: 'auto' }}>
-            <CircularProgress />
-          </div>
-        ) : (
-          <SortedTable
-            data={orderBy(students, orderByColumnName, order).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)}
-            handleSort={handleSort}
-            labels={fields}
-            order={order}
-            orderByColumnName={orderByColumnName}
-          />
-        )
-      }
+      {loading ? (
+        <div style={{ width: '4vw', margin: 'auto' }}>
+          <CircularProgress />
+        </div>
+      ) : (
+        <SortedTable
+          data={orderBy(students, orderByColumnName, order).slice(
+            page * rowsPerPage,
+            page * rowsPerPage + rowsPerPage,
+          )}
+          handleSort={handleSort}
+          labels={fields}
+          order={order}
+          orderByColumnName={orderByColumnName}
+          handleDelete={deleteStudent}
+          handleEdit={editStudent}
+        />
+      )}
       <TablePagination
         rowsPerPageOptions={[5, 10, 25]}
         component="div"
