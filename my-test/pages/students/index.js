@@ -5,7 +5,7 @@ import { TablePagination } from '@mui/material';
 import SortedTable from '../../Components/Table';
 import { useApiRequest } from '../../hooks/useApiRequest';
 
-export const Index = () => {
+export const Students = () => {
   const [students, setStudents] = useState([]);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [page, setPage] = useState(0);
@@ -79,4 +79,4 @@ export const Index = () => {
   );
 };
 
-export default Index;
+export default Students;
