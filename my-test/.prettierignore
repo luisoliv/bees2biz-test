@@ -1,0 +1,6 @@
+#ignore styles
+./styles
+styles
+
+#ignore next-env
+next-env.d.ts

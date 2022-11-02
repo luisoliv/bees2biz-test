@@ -6,7 +6,7 @@ export const Aspirants = () => {
     <div>
       <Button variant="contained">Hello World</Button>
     </div>
-  )
-}
+  );
+};
 
 export default Aspirants;
