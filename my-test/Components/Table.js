@@ -6,7 +6,7 @@ import TableCell from '@mui/material/TableCell';
 import TableBody from '@mui/material/TableBody';
 import TableSortLabel from '@mui/material/TableSortLabel';
 import TableContainer from '@mui/material/TableContainer';
-import { IconButton } from '@mui/material';
+import { Button, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 
@@ -43,11 +43,18 @@ export const SortedTable = (props) => {
               </TableCell>
             ))}
 
-            {(handleEdit || handleDelete) && (
-              <TableCell
-                align="right"
-                style={{ maxWidth: '100px' }}
-              ></TableCell>
+            {(handleEdit || handleDelete || handleCreate) && (
+              <TableCell align="right" style={{ maxWidth: '100px' }}>
+                {handleCreate && (
+                  <Button
+                    variant={'contained'}
+                    size={'small'}
+                    onClick={handleCreate}
+                  >
+                    Create
+                  </Button>
+                )}
+              </TableCell>
             )}
           </TableRow>
         </TableHead>

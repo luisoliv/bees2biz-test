@@ -62,7 +62,11 @@ export const Students = () => {
   };
 
   const editStudent = (studentId) => {
-    console.log('$ DEBUG studentId', studentId);
+    router.push('/students/' + studentId);
+  };
+
+  const createStudent = () => {
+    router.push('/students/create');
   };
 
   const handleChangePage = (event, newPage) => {
@@ -108,6 +112,7 @@ export const Students = () => {
           orderByColumnName={orderByColumnName}
           handleDelete={deleteStudent}
           handleEdit={editStudent}
+          handleCreate={createStudent}
         />
       )}
       <TablePagination
